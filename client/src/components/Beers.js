@@ -35,8 +35,8 @@ class Beers extends React.Component {
   listBeers = () => {
     const { beers } = this.state;
     return beers.map((beer) => (
-      <Grid.Column width={4}>
-        <Card key={beer.id}>
+      <Grid.Column key={beer.id} width={4}>
+        <Card>
           {this.hasLabel(beer)}
           <Card.Content>
             <Card.Header as="h4">{beer.name}</Card.Header>
