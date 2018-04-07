@@ -6,6 +6,7 @@ import {
   Divider,
   Grid,
   Image,
+  Label,
 } from 'semantic-ui-react';
 
 class Breweries extends React.Component {
@@ -18,20 +19,29 @@ class Breweries extends React.Component {
     });
   }
 
+  hasImage = (brewery) => {
+    if (brewery.hasOwnProperty('images') === true) {
+      return <Image src={brewery.images.square_medium} />;
+    } else {
+      return (
+        <Label
+          content="Image not found!"
+          icon="warning"
+        />
+      );
+    }
+  };
+
   listBreweries = () => {
     const { breweries } = this.state;
     return breweries.map((brewery) => (
       <Grid.Column width={4}>
         <Card key={brewery.id}>
-          {/* <Image src={brewery.image.square_medium} /> */}
+          {this.hasImage(brewery)}
           <Card.Content>
             <Card.Header as="h4">
               {brewery.name}
             </Card.Header>
-            <Card.Meta>
-              Established {brewery.established}
-            </Card.Meta>
-            <Card.Description />
           </Card.Content>
         </Card>;
       </Grid.Column>

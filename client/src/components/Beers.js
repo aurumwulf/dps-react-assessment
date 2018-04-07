@@ -5,6 +5,8 @@ import {
   Container,
   Divider,
   Grid,
+  Image,
+  Label,
 } from 'semantic-ui-react';
 
 class Beers extends React.Component {
@@ -17,11 +19,25 @@ class Beers extends React.Component {
     });
   }
 
+  hasLabel = (beer) => {
+    if (beer.hasOwnProperty('labels') === true) {
+      return <Image src={beer.labels.medium} />;
+    } else {
+      return (
+        <Label
+          content="Image not found!"
+          icon="warning"
+        />
+      );
+    }
+  };
+
   listBeers = () => {
     const { beers } = this.state;
     return beers.map((beer) => (
       <Grid.Column width={4}>
         <Card key={beer.id}>
+          {this.hasLabel(beer)}
           <Card.Content>
             <Card.Header as="h4">{beer.name}</Card.Header>
             <Card.Meta>ABV: {beer.abv}%</Card.Meta>
