@@ -8,16 +8,28 @@ import {
   Image,
   Label,
 } from 'semantic-ui-react';
+import InfiniteScroll from 'react-infinite-scroller';
 
 class Breweries extends React.Component {
-  state = { breweries: [] };
+  state = { breweries: [], page: 1, total_pages: null };
 
   componentDidMount() {
-    axios.get('/api/all_breweries').then((res) => {
-      const { entries } = res.data;
-      this.setState({ breweries: entries });
-    });
+    this.loadMore();
   }
+
+  loadMore = () => {
+    const { breweries, page } = this.state;
+    axios
+      .get(`/api/all_breweries?page=${page}&per_page=10`)
+      .then((res) => {
+        const { entries, total_pages } = res.data;
+        this.setState({
+          breweries: breweries.concat(entries),
+          page: page + 1,
+          total_pages: total_pages,
+        });
+      });
+  };
 
   hasImage = (brewery) => {
     if (brewery.hasOwnProperty('images') === true) {
@@ -67,14 +79,20 @@ class Breweries extends React.Component {
   };
 
   render() {
+    const { page, total_pages } = this.state;
     return (
       <Container>
         <Divider hidden />
-        <Grid>
-          <Grid.Row stretched>
-            {this.listBreweries()}
-          </Grid.Row>
-        </Grid>
+        <InfiniteScroll
+          loadMore={this.loadMore()}
+          hasMore={page < total_pages}
+          useWindow={false}>
+          <Grid>
+            <Grid.Row stretched>
+              {this.listBreweries()}
+            </Grid.Row>
+          </Grid>
+        </InfiniteScroll>
       </Container>
     );
   }
