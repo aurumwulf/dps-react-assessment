@@ -11,6 +11,13 @@ import {
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link } from 'react-router-dom';
 
+const styles = {
+  container: {
+    height: '700px',
+    overflow: 'auto',
+  },
+};
+
 class Breweries extends React.Component {
   state = { breweries: [], page: 1, total_pages: null };
 
@@ -65,7 +72,7 @@ class Breweries extends React.Component {
   listBreweries = () => {
     const { breweries } = this.state;
     return breweries.map((brewery, index) => (
-      <Grid.Column key={index + 1} width={4}>
+      <Grid.Column key={index + 1} width={3}>
         <Card>
           {this.hasImage(brewery)}
           <Card.Content>
@@ -84,10 +91,10 @@ class Breweries extends React.Component {
   render() {
     const { page, total_pages } = this.state;
     return (
-      <Container>
+      <Container style={styles.container}>
         <Divider hidden />
         <InfiniteScroll
-          loadMore={this.loadMore()}
+          loadMore={this.loadMore}
           hasMore={page < total_pages}
           useWindow={false}>
           <Grid>

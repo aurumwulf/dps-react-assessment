@@ -12,6 +12,13 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { Link } from 'react-router-dom';
 import BeerView from './BeerView';
 
+const styles = {
+  container: {
+    height: '700px',
+    overflow: 'auto',
+  },
+};
+
 class Beers extends React.Component {
   state = { beers: [], page: 1, total_pages: 2 };
 
@@ -81,10 +88,10 @@ class Beers extends React.Component {
   render() {
     const { page, total_pages } = this.state;
     return (
-      <Container>
+      <Container style={styles.container}>
         <Divider hidden />
         <InfiniteScroll
-          loadMore={this.loadMore()}
+          loadMore={this.loadMore}
           hasMore={page < total_pages}
           useWindow={false}>
           <Grid>
