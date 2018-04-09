@@ -11,29 +11,25 @@ import {
 import InfiniteScroll from 'react-infinite-scroller';
 
 class Beers extends React.Component {
-  state = { beers: [], page: null };
+  state = { beers: [], page: 1, total_pages: null };
 
   componentDidMount = () => {
-    axios.get('/api/all_beers').then((res) => {
-      const { entries, page } = res.data;
-      this.setState({
-        beers: entries,
-        page: page,
-      });
-    });
+    this.loadMore();
   };
-  // loadMore = () => {
-  //   const { beers, page } = this.state;
-  //   axios
-  //     .get(`/api/all_beers?page=${page}&per_page=10`)
-  //     .then((res) => {
-  //       const { entries } = res.data;
-  //       this.setState({
-  //         beers: beers.concat(entries),
-  //         page: page + 1,
-  //       });
-  //     });
-  // };
+
+  loadMore = () => {
+    const { beers, page } = this.state;
+    axios
+      .get(`/api/all_beers?page=${page}&per_page=10`)
+      .then((res) => {
+        const { entries, total_pages } = res.data;
+        this.setState({
+          beers: beers.concat(entries),
+          page: page + 1,
+          total_pages: total_pages,
+        });
+      });
+  };
 
   hasLabel = (beer) => {
     if (beer.hasOwnProperty('labels') === true) {
@@ -55,19 +51,21 @@ class Beers extends React.Component {
           {beer.style.name}
         </Card.Description>
       );
+    } else {
+      return null;
     }
   };
 
   listBeers = () => {
     const { beers } = this.state;
-    return beers.map((beer) => (
-      <Grid.Column key={beer.id} width={3}>
+    return beers.map((beer, index) => (
+      <Grid.Column key={index} width={3}>
         <Card>
           {this.hasLabel(beer)}
           <Card.Content>
             <Card.Header as="h4">{beer.name}</Card.Header>
             <Card.Meta>ABV: {beer.abv}%</Card.Meta>
-            {/* {this.hasStyle(beer)} */}
+            {this.hasStyle(beer)}
           </Card.Content>
         </Card>;
       </Grid.Column>
@@ -75,21 +73,20 @@ class Beers extends React.Component {
   };
 
   render() {
-    const { page } = this.state;
+    const { page, total_pages } = this.state;
     return (
       <Container>
         <Divider hidden />
-        {/* <InfiniteScroll
-          pageStart={0}
-          loadMore={() => this.loadMore}
-          hasMore={true || false}
-          useWindow={false}> */}
-        <Grid>
-          <Grid.Row stretched>
-            {this.listBeers()}
-          </Grid.Row>
-        </Grid>
-        {/* </InfiniteScroll> */}
+        <InfiniteScroll
+          loadMore={this.loadMore()}
+          hasMore={page < total_pages}
+          useWindow={false}>
+          <Grid>
+            <Grid.Row stretched>
+              {this.listBeers()}
+            </Grid.Row>
+          </Grid>
+        </InfiniteScroll>
       </Container>
     );
   }
