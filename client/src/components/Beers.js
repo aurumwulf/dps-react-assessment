@@ -9,9 +9,11 @@ import {
   Label,
 } from 'semantic-ui-react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { Link } from 'react-router-dom';
+import BeerView from './BeerView';
 
 class Beers extends React.Component {
-  state = { beers: [], page: 1, total_pages: null };
+  state = { beers: [], page: 1, total_pages: 2 };
 
   componentDidMount = () => {
     this.loadMore();
@@ -59,11 +61,15 @@ class Beers extends React.Component {
   listBeers = () => {
     const { beers } = this.state;
     return beers.map((beer, index) => (
-      <Grid.Column key={index} width={3}>
+      <Grid.Column key={index + 1} width={3}>
         <Card>
           {this.hasLabel(beer)}
           <Card.Content>
-            <Card.Header as="h4">{beer.name}</Card.Header>
+            <Link to={`/beers/${beer.name}`}>
+              <Card.Header as="h4">
+                {beer.name}
+              </Card.Header>
+            </Link>
             <Card.Meta>ABV: {beer.abv}%</Card.Meta>
             {this.hasStyle(beer)}
           </Card.Content>
